@@ -168,6 +168,9 @@ inline void write_buy_order_book(TOrders &buy_orders, std::vector<std::array<dou
 
 int main(int argc, char *argv[]) {
 
+    auto max_order_count = stoi(argv[5]);
+    auto trimmed_order_count = stoi(argv[6]);
+
     TOrders asks;
     TOrders bids;
     std::vector<match> matches;
@@ -217,13 +220,13 @@ int main(int argc, char *argv[]) {
             publisher_socket.send(pub_message);
 
             // do trimming and garbage collection
-            if (asks.size() > 4000) {
-                for (auto i = 1; i != 3000; ++i) {
+            if (asks.size() > max_order_count) {
+                for (auto i = 0; i < trimmed_order_count; ++i) {
                     erase_last(asks);
                 }
             }
-            if (bids.size() > 4000) {
-                for (auto i = 1; i != 3000; ++i) {
+            if (bids.size() > max_order_count) {
+                for (auto i = 0; i < trimmed_order_count; ++i) {
                     erase_first(bids);
                 }
             }
