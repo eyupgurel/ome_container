@@ -216,6 +216,9 @@ ZEROMQ_LIB:FILEPATH=/opt/homebrew/lib/libzmq.dylib
 //Path to a library.
 ZMQPP_LIB:FILEPATH=/opt/homebrew/lib/libzmqpp.dylib
 
+//The directory containing a CMake configuration file for fmt.
+fmt_DIR:PATH=/usr/local/lib/cmake/fmt
+
 //Value Computed by CMake
 ome_container_BINARY_DIR:STATIC=/Users/eyupgurel/Documents/sc/c++/ome_container/cmake-build-release
 

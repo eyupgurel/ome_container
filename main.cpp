@@ -3,8 +3,8 @@
 
 #include <zmq_addon.hpp>
 #include <zmqpp/zmqpp.hpp>
-
 #include "rxcpp/rx.hpp"
+#include <fmt/format.h>
 
 namespace Rx {
     using namespace rxcpp;
@@ -167,19 +167,20 @@ inline void write_buy_order_book(TOrders &buy_orders, std::vector<std::array<dou
 #pragma ide diagnostic ignored "EndlessLoop"
 
 int main(int argc, char *argv[]) {
+
     TOrders asks;
     TOrders bids;
     std::vector<match> matches;
+
+    static zmq::context_t resp_context;
+    zmq::socket_t resp_socket(resp_context, zmq::socket_type::rep);
+    resp_socket.bind(fmt::format("{}:{}!", argv[1],argv[2]));
 
     // Create a publisher publisher_socket
     zmqpp::context publisher_context;
     zmqpp::socket_type type = zmqpp::socket_type::publish;
     zmqpp::socket publisher_socket(publisher_context, type);
-    publisher_socket.bind(argv[2]);
-
-    static zmq::context_t resp_context;
-    zmq::socket_t resp_socket(resp_context, zmq::socket_type::rep);
-    resp_socket.bind(argv[1]);
+    publisher_socket.bind(fmt::format("{}:{}!", argv[3],argv[4]));
 
     while (true) {
         try {
