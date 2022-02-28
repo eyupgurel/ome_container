@@ -45,14 +45,16 @@ inline void to_json(json &j, const match &m) {
     j = json{
             {"requestingOrderId", m.requestingOrderId},
             {"respondingOrderId", m.respondingOrderId},
-            {"matchAmount",       m.matchAmount}
-    };
+            {"matchAmount", m.matchAmount},
+            {"matchPrice", m.matchPrice},
+            };
 }
 
 inline void from_json(const json &j, match &m) {
     m.requestingOrderId = j.at("requestingOrderId").get<unsigned long>();
     m.respondingOrderId = j.at("respondingOrderId").get<unsigned long>();
     m.matchAmount = j.at("matchAmount").get<double>();
+    m.matchPrice = j.at("matchPrice").get<double>();
 }
 
 inline void to_json(json &j, const engine_state &es) {
@@ -89,7 +91,7 @@ inline void from_json(const json &j, engine_state &es) {
     }
     auto matches = j.at("matches").get<json::array_t>();
     for (auto j_match: matches) {
-        match match(j_match["requestingOrderId"], j_match["respondingOrderId"], j_match["matchAmount"]);
+        match match(j_match["requestingOrderId"], j_match["respondingOrderId"], j_match["matchAmount"], j_match["matchPrice"]);
         es.matches.emplace_back(match);
     }
 }
