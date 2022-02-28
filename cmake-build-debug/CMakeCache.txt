@@ -14,6 +14,15 @@
 # EXTERNAL cache entries
 ########################
 
+//Path to a library.
+BOOST_PROGRAM_OPTIONS_LIB:FILEPATH=/Users/eyupgurel/Documents/sc/c++/boost_1_78_0/bin.v2/libs/program_options/build/clang-darwin-13/release/link-static/threading-multi/visibility-hidden/libboost_program_options.a
+
+//The directory containing a CMake configuration file for Boost.
+Boost_DIR:PATH=Boost_DIR-NOTFOUND
+
+//Path to a file.
+Boost_INCLUDE_DIR:PATH=/usr/local/include
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=CMAKE_ADDR2LINE-NOTFOUND
 
@@ -211,6 +220,9 @@ ORDER_MATCHING_ENGINE_LIB:FILEPATH=/Users/eyupgurel/lib/matching_engine/debug/li
 ORDER_MATCHING_ENGINE_UTILS_LIB:FILEPATH=/Users/eyupgurel/lib/matching_engine_test_utils/debug/libmatching_engine_test_utils.dylib
 
 //Path to a library.
+SODIUM_LIB:FILEPATH=/opt/homebrew/lib/libsodium.a
+
+//Path to a library.
 ZEROMQ_LIB:FILEPATH=/opt/homebrew/lib/libzmq.dylib
 
 //Path to a library.
@@ -236,6 +248,10 @@ rxcpp_DIR:PATH=/usr/local/share/rxcpp/cmake
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: Boost_DIR
+Boost_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: Boost_INCLUDE_DIR
+Boost_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ADDR2LINE
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
@@ -367,4 +383,16 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Boost
+FIND_PACKAGE_MESSAGE_DETAILS_Boost:INTERNAL=[/usr/local/include][c ][v1.78.0(1.78.0)]
+//Last used BOOST_ROOT value.
+_BOOST_ROOT_LAST:INTERNAL=/usr/local/include/boost
+//Components requested for this build tree.
+_Boost_COMPONENTS_SEARCHED:INTERNAL=
+//Last used Boost_INCLUDE_DIR value.
+_Boost_INCLUDE_DIR_LAST:INTERNAL=/usr/local/include
+//Last used Boost_NAMESPACE value.
+_Boost_NAMESPACE_LAST:INTERNAL=boost
+//Last used Boost_USE_MULTITHREADED value.
+_Boost_USE_MULTITHREADED_LAST:INTERNAL=TRUE
 

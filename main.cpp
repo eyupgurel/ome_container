@@ -5,6 +5,9 @@
 #include <zmqpp/zmqpp.hpp>
 #include "rxcpp/rx.hpp"
 #include <fmt/format.h>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
 
 namespace Rx {
     using namespace rxcpp;
@@ -15,12 +18,8 @@ namespace Rx {
 using namespace Rx;
 using namespace nlohmann;
 
+namespace po = boost::program_options;
 
-std::string get_pid() {
-    std::stringstream s;
-    s << std::this_thread::get_id();
-    return s.str();
-}
 
 inline void to_json(json &j, const order &o) {
     j = json{
@@ -168,8 +167,75 @@ inline void write_buy_order_book(TOrders &buy_orders, std::vector<std::array<dou
 
 int main(int argc, char *argv[]) {
 
-    auto max_order_count = stoi(argv[5]);
-    auto trimmed_order_count = stoi(argv[6]);
+    std::string zmq_sock_uri;
+    int zmq_resp_sock_port;
+    int zmq_pub_sock_port;
+    int max_order_book_size;
+    int trimmed_order_book_size;
+
+    try {
+      po::options_description desc("Allowed options");
+        desc.add_options()
+                ("help", "produce help message")
+                ("zmq-sock-uri", po::value<std::string>(&zmq_sock_uri), "ZeroMQ response socket uri")
+                ("zmq-resp-sock-port", po::value<int>(&zmq_resp_sock_port), "ZeroMQ response socket port")
+                ("zmq-pub-sock-port", po::value<int>(&zmq_pub_sock_port), "ZeroMQ publish socket port")
+                ("max-order-book-size", po::value<int>(&max_order_book_size), "Maximum order book size bid or ask")
+                ("trimmed-order-book-size", po::value<int>(&trimmed_order_book_size), "Trimmed order book size bid or ask")
+                ;
+
+        po::variables_map vm;
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+
+        if (vm.count("help")) {
+            cout << desc << "\n";
+            return 0;
+        }
+
+        if (vm.count("zmq-sock-uri")) {
+            cout << "ZeroMQ socket endpoint is set to "
+                 << zmq_sock_uri << ".\n";
+        } else {
+            cout << "ZeroMQ socket endpoint was not set.\n";
+        }
+
+        if (vm.count("zmq-resp-sock-port")) {
+            cout << "ZeroMQ response socket port is set to "
+                 << zmq_resp_sock_port << ".\n";
+        } else {
+            cout << "ZeroMQ response socket port was not set.\n";
+        }
+
+        if (vm.count("zmq-pub-sock-port")) {
+            cout << "ZeroMQ publish socket port is set to "
+                 << zmq_pub_sock_port << ".\n";
+        } else {
+            cout << "ZeroMQ publish socket port was not set.\n";
+        }
+
+        if (vm.count("max-order-book-size")) {
+            cout << "Max order book size is set to "
+                 << max_order_book_size << ".\n";
+        } else {
+            cout << "Max order book size was not set.\n";
+        }
+
+        if (vm.count("trimmed-order-book-size")) {
+            cout << "Trimmed order book size is set to "
+                 << trimmed_order_book_size << ".\n";
+        } else {
+            cout << "Trimmed order book size was not set.\n";
+        }
+    }
+    catch(exception& e) {
+        cerr << "error: " << e.what() << "\n";
+        return 1;
+    }
+    catch(...) {
+        cerr << "Exception of unknown type!\n";
+        return 1;
+    }
 
     TOrders asks;
     TOrders bids;
@@ -177,13 +243,13 @@ int main(int argc, char *argv[]) {
 
     static zmq::context_t resp_context;
     zmq::socket_t resp_socket(resp_context, zmq::socket_type::rep);
-    resp_socket.bind(fmt::format("{}:{}!", argv[1],argv[2]));
+    resp_socket.bind(fmt::format("{}:{}!", zmq_sock_uri,zmq_resp_sock_port));
 
     // Create a publisher publisher_socket
     zmqpp::context publisher_context;
     zmqpp::socket_type type = zmqpp::socket_type::publish;
     zmqpp::socket publisher_socket(publisher_context, type);
-    publisher_socket.bind(fmt::format("{}:{}!", argv[3],argv[4]));
+    publisher_socket.bind(fmt::format("{}:{}!", zmq_sock_uri,zmq_pub_sock_port));
 
     while (true) {
         try {
@@ -220,13 +286,13 @@ int main(int argc, char *argv[]) {
             publisher_socket.send(pub_message);
 
             // do trimming and garbage collection
-            if (asks.size() > max_order_count) {
-                for (auto i = 0; i < trimmed_order_count; ++i) {
+            if (asks.size() > max_order_book_size) {
+                for (auto i = 0; i < trimmed_order_book_size; ++i) {
                     erase_last(asks);
                 }
             }
-            if (bids.size() > max_order_count) {
-                for (auto i = 0; i < trimmed_order_count; ++i) {
+            if (bids.size() > max_order_book_size) {
+                for (auto i = 0; i < trimmed_order_book_size; ++i) {
                     erase_first(bids);
                 }
             }
@@ -242,6 +308,7 @@ int main(int argc, char *argv[]) {
             std::cerr << "unknown exception occured" << std::endl;
         }
     }
+
 
 
 /*    rxcpp::observable<>::range(1, 2000).
