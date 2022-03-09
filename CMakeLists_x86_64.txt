@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-set(OSX_ARCHITECTURE arm64 #[[x86_64]])
+set(OSX_ARCHITECTURE x86_64 #[[arm64]])
 set(CMAKE_OSX_ARCHITECTURES ${OSX_ARCHITECTURE})
 set(CMAKE_HOST_SYSTEM_PROCESSOR  ${OSX_ARCHITECTURE})
 set(CMAKE_SYSTEM_PROCESSOR  ${OSX_ARCHITECTURE})
@@ -20,6 +20,13 @@ find_package(rxcpp CONFIG)
 
 find_package(fmt)
 
+#find cppzmq wrapper, installed by make of cppzmq
+find_package(cppzmq)
+
+find_package(ZeroMQ REQUIRED)
+
+
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 set(BOOST_ROOT "/usr/local/include/boost")
 set(BOOSTROOT "/usr/local/include/boost")
@@ -28,36 +35,37 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "Could not find boost!")
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS} "/usr/local/include" "/usr/local/include/zmqpp/4.2.0/include" "/usr/local/include/zeromq/4.3.4/include" "/usr/local/include/cppzmq/4.8.1/include" "~/Documents/sc/c++/matchingengine" "~/Documents/sc/c++/matching_engine_test_utils")
+include_directories(${Boost_INCLUDE_DIRS} "~/Documents/sc/c++/matchingengine" "~/Documents/sc/c++/matching_engine_test_utils")
+
+
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 
 SET(CMAKE_BUILD_TYPE_LOWER_CASE, ${CMAKE_BUILD_TYPE})
 string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOWER_CASE)
 
-find_library(ZEROMQ_LIB
-        NAMES libzmq.a
-        PATHS /opt/homebrew/lib)
 
-find_library(SODIUM_LIB
-        NAMES libsodium.a
-        PATHS /opt/homebrew/lib)
 
 find_library(ZMQPP_LIB
         NAMES libzmqpp.a
-        PATHS /opt/homebrew/lib)
+        PATHS /usr/lib)
 
 find_library(ORDER_MATCHING_ENGINE_LIB
-            NAMES libmatching_engine.dylib
+            NAMES libmatching_engine.a
             PATHS ~/lib/matching_engine/${CMAKE_BUILD_TYPE_LOWER_CASE})
 
 find_library(BOOST_PROGRAM_OPTIONS_LIB
             NAMES libboost_program_options.a
-            PATHS ~/Documents/sc/c++/boost_1_78_0/bin.v2/libs/program_options/build/clang-darwin-13/release/link-static/threading-multi/visibility-hidden)
+            PATHS /usr/lib)
+
+find_library(FMT_LIB
+        NAMES libfmt.a
+        PATHS /usr/local/lib)
 
 if (${CMAKE_BUILD_TYPE_LOWER_CASE} STREQUAL "debug")
     message(STATUS "debug build")
-    target_link_libraries(ome_container PRIVATE fmt::fmt debug ${SODIUM_LIB}  ${ZEROMQ_LIB} ${ZMQPP_LIB} ${ORDER_MATCHING_ENGINE_LIB} ${BOOST_PROGRAM_OPTIONS_LIB})
+    target_link_libraries(ome_container PRIVATE debug nlohmann_json::nlohmann_json cppzmq ${FMT_LIB}  ${ZMQPP_LIB}  ${ORDER_MATCHING_ENGINE_LIB} ${BOOST_PROGRAM_OPTIONS_LIB})
 elseif(${CMAKE_BUILD_TYPE_LOWER_CASE} STREQUAL "release")
     message(STATUS "release build")
-    target_link_libraries(ome_container PRIVATE fmt::fmt optimized ${SODIUM_LIB} ${ZEROMQ_LIB} ${ZMQPP_LIB} ${ORDER_MATCHING_ENGINE_LIB} ${BOOST_PROGRAM_OPTIONS_LIB})
+    target_link_libraries(ome_container PRIVATE optimized nlohmann_json::nlohmann_json cppzmq ${FMT_LIB} ${ZMQPP_LIB}   ${ORDER_MATCHING_ENGINE_LIB} ${BOOST_PROGRAM_OPTIONS_LIB})
 endif()
