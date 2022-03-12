@@ -1,6 +1,0 @@
-# ninja log v5
-3196	3307	1646837900988453874	ome_container	fbe0305cc0614bdc
-9	3196	1646837900867156858	CMakeFiles/ome_container.dir/main.cpp.o	4d2bd700c0b3e945
-4	1483	1645877430432250046	CMakeFiles/ome_container.dir/test/churn.cpp.o	91b1be9ccb8ff597
-0	4	0	clean	2e50f69801418666
-2	75	1646837907927972258	build.ninja	db4eab7a482f76ec

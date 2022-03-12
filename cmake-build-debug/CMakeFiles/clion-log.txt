@@ -1,9 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/Clion.app/Contents/bin/ninja/Mac/ninja /Users/eyupgurel/Documents/sc/c++/ome_container
-CMAKE_OSX_ARCHITECTURES: arm64
-CMAKE_HOST_SYSTEM_PROCESSOR: arm64
-CMAKE_SYSTEM_PROCESSOR: arm64
-CMAKE_CROSSCOMPILING: 
--- debug build
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/eyupgurel/Documents/sc/c++/ome_container/cmake-build-debug
