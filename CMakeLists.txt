@@ -47,7 +47,7 @@ find_library(ZMQPP_LIB
         PATHS /opt/homebrew/lib)
 
 find_library(ORDER_MATCHING_ENGINE_LIB
-            NAMES libmatching_engine.dylib
+            NAMES libmatching_engine.a
             PATHS ~/lib/matching_engine/${CMAKE_BUILD_TYPE_LOWER_CASE})
 
 find_library(BOOST_PROGRAM_OPTIONS_LIB
